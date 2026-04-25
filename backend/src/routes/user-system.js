@@ -2,7 +2,7 @@ import express from "express";
 
 import { validations, email } from "../utils/index.js";
 import { User, Reset, Invitation } from "../models/index.js";
-
+import crypto from "crypto";
 const router = express.Router();
 
 router.post(
@@ -285,38 +285,6 @@ router.post("/hash-password-md5", (req, res) => {
 		return res.json({ success: true, hash });
 	} catch (error) {
 		return res.status(500).json({ message: "Hashing failed" });
-	}
-});
-
-const crypto = require("crypto");
-
-router.post("/encrypt-data", (req, res) => {
-	try {
-		const { data, password } = req.body;
-
-		if (!data || !password) {
-			return res.status(400).json({ message: "Data and password required" });
-		}
-
-		const iv = crypto.randomBytes(16);
-
-		const key = crypto.scryptSync(password, "salt-should-be-unique", 32);
-
-		const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
-
-		let encrypted = cipher.update(data, "utf8", "hex");
-		encrypted += cipher.final("hex");
-
-		const authTag = cipher.getAuthTag().toString("hex");
-
-		return res.json({
-			success: true,
-			encrypted,
-			iv: iv.toString("hex"),
-			authTag,
-		});
-	} catch (error) {
-		return res.status(500).json({ message: "Encryption failed" });
 	}
 });
 

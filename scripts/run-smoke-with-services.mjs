@@ -15,7 +15,7 @@ import http from "http";
 import https from "https";
 import { fileURLToPath } from "url";
 import path from "path";
-
+import { execFile, exec } from "child_process";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const isWindows = process.platform === "win32";
 
@@ -102,7 +102,7 @@ function waitForService(service) {
 const npmCmd = isWindows ? "npm.cmd" : "npm";
 const spawned = [];
 
-const { spawn } = require("child_process");
+// const { spawn } = require("child_process");
 
 function startService(service) {
 	const safeScriptPattern = /^[a-zA-Z0-9\-_]+$/;
