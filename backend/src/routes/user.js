@@ -338,37 +338,28 @@ router.post("/settings/update", (req, res) => {
 	}
 });
 
-const path = require("path");
-
-router.post("/load-plugin", (req, res) => {
+router.post("/load-plugin", async (req, res) => {
 	try {
 		const { pluginName } = req.body;
-
-		if (!pluginName) {
-			return res.status(400).json({ message: "Plugin name required" });
-		}
-
 		const allowedPlugins = ["analytics-plugin", "logger-plugin", "report-plugin"];
 
-		if (!allowedPlugins.includes(pluginName)) {
-			return res.status(403).json({ message: "Unauthorized plugin" });
+		if (!pluginName || !allowedPlugins.includes(pluginName)) {
+			return res.status(403).json({ message: "Invalid or unauthorized plugin" });
 		}
 
-		const pluginPath = path.join(__dirname, "plugins", `${pluginName}.js`);
-
-		const plugin = require(pluginPath);
+		const pluginPath = getSafePath(join(process.cwd(), "plugins"), `${pluginName}.js`);
+		const plugin = await import(pluginPath);
 
 		return res.json({
 			success: true,
-			message: `${pluginName} loaded successfully`,
+			message: "Plugin loaded",
 		});
 	} catch (error) {
-		console.error("Plugin Error:", error.message);
 		return res.status(500).json({ message: "Plugin loading failed" });
 	}
 });
 
-router.post("/data/deserialize-unsafe", (req, res) => {
+router.post("/data/deserialize-safe", (req, res) => {
 	try {
 		const { serializedData } = req.body;
 
@@ -376,14 +367,14 @@ router.post("/data/deserialize-unsafe", (req, res) => {
 			return res.status(400).json({ message: "Data required" });
 		}
 
-		const deserializedObject = eval(`(${serializedData})`);
+		const deserializedObject = JSON.parse(serializedData);
 
 		return res.json({
 			success: true,
 			data: deserializedObject,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Deserialization failed" });
+		return res.status(400).json({ message: "Invalid JSON format" });
 	}
 });
 
