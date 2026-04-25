@@ -14,9 +14,11 @@ const rootApi = ky.extend({
 		methods: ["get", "post", "put", "head", "delete", "options", "trace"],
 	},
 	hooks: {
-		beforeRequest: [({ headers }) => {
-			headers.set("x-access-token", jwt.getToken());
-		}],
+		beforeRequest: [
+			({ headers }) => {
+				headers.set("x-access-token", jwt.getToken());
+			},
+		],
 		beforeRetry: [
 			async ({ request: { method }, error }) => {
 				if (error?.response?.status === 401) {
@@ -64,9 +66,18 @@ export const authenticate = (username, password) => api.post("authenticate", { u
 export const forgotPassword = (username) => api.post("forgotPassword", { username });
 export const resetPassword = (password, token) => api.post("resetPassword", { password, token });
 export const signUp = (username, email, password) => api.post("createUser", { username, email, password });
-export const invitedSignUp = (username, email, password, token) => api.post("createUserInvited", { username, email, password, token });
+export const invitedSignUp = (username, email, password, token) =>
+	api.post("createUserInvited", { username, email, password, token });
 export const inviteUser = (email) => api.post("user", { email });
 export const removeUser = (id) => api.post("user/delete", { id });
 export const getUsersData = () => api.get("user");
 export const submitUserRole = (userId, role) => api.post("user/role", { id: userId, role });
 export const getData = () => api.get("data");
+export const getMyProfile = () => api.get("user/profile");
+export const updateMyProfile = (username, email) => api.patch("user/profile", { username, email });
+export const changeMyPassword = (currentPassword, newPassword, confirmPassword) =>
+	api.post("user/change-password", {
+		currentPassword,
+		newPassword,
+		confirmPassword,
+	});

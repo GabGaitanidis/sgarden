@@ -1,11 +1,19 @@
 import { useState, memo } from "react";
 import { styled } from "@mui/material/styles";
-import { AppBar, Toolbar, Typography, Menu, MenuItem, IconButton, Button, Paper, Breadcrumbs, Box } from "@mui/material";
-import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-	ExpandMore,
-	MoreVert as MoreIcon,
-} from "@mui/icons-material";
+	AppBar,
+	Toolbar,
+	Typography,
+	Menu,
+	MenuItem,
+	IconButton,
+	Button,
+	Paper,
+	Breadcrumbs,
+	Box,
+} from "@mui/material";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { AccountCircle, ExpandMore, MoreVert as MoreIcon } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { Image } from "mui-image";
 
@@ -75,11 +83,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ButtonWithText = ({ text, icon, more, handler }) => (
-	<Button sx={{ height: "100%", display: "flex", flexDirection: "column", p: 1, mx: 1 }} onClick={(event) => handler(event)}>
-		<div style={{ width: "100%", height: "100%" }}>
-			{icon}
-		</div>
-		<Typography align="center" color="secondary.main" fontSize="small" fontWeight="bold" display="flex" alignItems="center" sx={{ textTransform: "capitalize" }}>
+	<Button
+		sx={{ height: "100%", display: "flex", flexDirection: "column", p: 1, mx: 1 }}
+		onClick={(event) => handler(event)}
+	>
+		<div style={{ width: "100%", height: "100%" }}>{icon}</div>
+		<Typography
+			align="center"
+			color="secondary.main"
+			fontSize="small"
+			fontWeight="bold"
+			display="flex"
+			alignItems="center"
+			sx={{ textTransform: "capitalize" }}
+		>
 			{text}
 			{more && <ExpandMore />}
 		</Typography>
@@ -91,37 +108,47 @@ const Header = ({ isAuthenticated }) => {
 
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+	const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+	const isMenuOpen = Boolean(menuAnchorEl);
+	const authUser = isAuthenticated ? jwt.decode() : null;
+	const username = authUser?.username || "User";
 
-	const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
-	const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);
+	const handleMenuClose = () => setMenuAnchorEl(null);
+	const handleMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
 
 	const CrumpLink = styled(Link)(({ theme }) => ({ display: "flex", color: theme.palette.third.main }));
 
-	const buttons = [
+	const menuButtons = [
+		{
+			text: "Profile",
+			handler: () => {
+				navigate("/profile");
+				handleMenuClose();
+			},
+		},
 		{
 			icon: <LogoutIcon className={classes.svgIcon} />,
 			text: "Logout",
 			handler: () => {
 				jwt.destroyToken();
+				handleMenuClose();
 				navigate("/");
 			},
 		},
 	];
 
-	const renderMobileMenu = (
+	const renderMenu = (
 		<Menu
 			keepMounted
-			anchorEl={mobileMoreAnchorEl}
+			anchorEl={menuAnchorEl}
 			anchorOrigin={{ vertical: "top", horizontal: "right" }}
 			transformOrigin={{ vertical: "top", horizontal: "right" }}
-			open={isMobileMenuOpen}
-			onClose={handleMobileMenuClose}
+			open={isMenuOpen}
+			onClose={handleMenuClose}
 		>
-			{buttons.map((button) => (
+			{menuButtons.map((button) => (
 				<MenuItem key={button.text} onClick={button.handler}>
-					<Image src={button.icon} width="20px" sx={{ fill: "third" }} />
+					{button.icon || <AccountCircle sx={{ width: "20px", height: "20px" }} />}
 					<p style={{ marginLeft: "5px" }}>{button.text}</p>
 					{button.more && <ExpandMore />}
 				</MenuItem>
@@ -145,39 +172,35 @@ const Header = ({ isAuthenticated }) => {
 						<Image src={logo} alt="Logo" sx={{ p: 0, my: 0, height: "100%", maxWidth: "200px" }} />
 					</Box>
 					<Box className={classes.grow} style={{ height: "100%" }} />
-					{isAuthenticated
-					&& (
+					{isAuthenticated && (
 						<>
 							<Box sx={{ display: { xs: "none", sm: "none", md: "flex" }, height: "100%", py: 1 }}>
-								{buttons.map((button) => (
-									<ButtonWithText
-										key={button.text}
-										icon={button.icon}
-										text={button.text}
-										handler={button.handler}
-										more={button.more}
-									/>
-								))}
+								<ButtonWithText
+									icon={<AccountCircle color="secondary" />}
+									text={username}
+									handler={handleMenuOpen}
+									more
+								/>
 							</Box>
 							<Box sx={{ display: { xs: "flex", sm: "flex", md: "none" } }}>
-								<IconButton color="primary" onClick={handleMobileMenuOpen}><MoreIcon /></IconButton>
+								<IconButton color="primary" onClick={handleMenuOpen}>
+									<MoreIcon />
+								</IconButton>
 							</Box>
 						</>
 					)}
 				</Toolbar>
 			</AppBar>
-			{isAuthenticated
-			&& (
+			{isAuthenticated && (
 				<Paper elevation={0} className={classes.root}>
-					<Breadcrumbs className="header-container">{crumps.map((e, ind) => <div key={`crump_${ind}`}>{e}</div>)}</Breadcrumbs>
+					<Breadcrumbs className="header-container">
+						{crumps.map((e, ind) => (
+							<div key={`crump_${ind}`}>{e}</div>
+						))}
+					</Breadcrumbs>
 				</Paper>
 			)}
-			{isAuthenticated
-			&& (
-				<>
-					{renderMobileMenu}
-				</>
-			)}
+			{isAuthenticated && <>{renderMenu}</>}
 		</>
 	);
 };

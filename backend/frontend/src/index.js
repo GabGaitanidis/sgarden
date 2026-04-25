@@ -28,6 +28,7 @@ import Users from "./screens/Users.js";
 import Dashboard from "./screens/Dashboard.js";
 import Dashboard1 from "./screens/Dashboard1.js";
 import Dashboard2 from "./screens/Dashboard2.js";
+import Profile from "./screens/Profile.js";
 import { adjustColors, jwt, colorSuggestions } from "./utils/index.js";
 import Map from "./components/Map.js";
 
@@ -73,7 +74,9 @@ const App = () => {
 				<ErrorBoundary FallbackComponent={ErrorFallback}>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<Header isAuthenticated={authenticated} />
-						<main style={{ position: "relative", zIndex: 0, height: `calc(100vh - ${authenticated ? "160" : "70"}px)` }}>
+						<main
+							style={{ position: "relative", zIndex: 0, height: `calc(100vh - ${authenticated ? "160" : "70"}px)` }}
+						>
 							<Routes>
 								<Route index element={<GuestOnly c={<SignIn />} />} />
 								<Route path="auth" element={<GuestOnly c={<Auth />} />} />
@@ -85,11 +88,12 @@ const App = () => {
 								<Route path="dashboard" element={<Protected c={<Dashboard />} />} />
 								<Route path="dashboard1" element={<Protected c={<Dashboard1 />} />} />
 								<Route path="dashboard2" element={<Protected c={<Dashboard2 />} />} />
+								<Route path="profile" element={<Protected c={<Profile />} />} />
 								<Route path="map" element={<Protected c={<Map />} />} />
 								<Route path="*" element={<NotFound />} />
 							</Routes>
 						</main>
-						{authenticated && <Footer /> }
+						{authenticated && <Footer />}
 						<Snackbar />
 					</LocalizationProvider>
 				</ErrorBoundary>
