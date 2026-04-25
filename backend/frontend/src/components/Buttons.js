@@ -1,4 +1,4 @@
-import { Typography, Button } from "@mui/material";
+import BaseButton from "./BaseButton.js";
 
 export const PrimaryBackgroundButton = ({
 	id = "primary-background-button",
@@ -12,24 +12,20 @@ export const PrimaryBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="primary"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );
 
 export const PrimaryBorderButton = ({
@@ -45,24 +41,22 @@ export const PrimaryBorderButton = ({
 	backgroundColor = "white",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="outlined"
 		color="primary"
-		size={(size || "")}
-		style={{ ...(width && { width }), backgroundColor: (backgroundColor || "white"), borderWidth: "3px", borderColor: titleColor }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+		backgroundColor={backgroundColor}
+		borderColor={titleColor}
+	/>
 );
 
 export const SecondaryBackgroundButton = ({
@@ -77,24 +71,20 @@ export const SecondaryBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="secondary"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );
 
 export const SecondaryBorderButton = ({
@@ -110,24 +100,21 @@ export const SecondaryBorderButton = ({
 	backgroundColor = "white",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="outlined"
 		color="secondary"
-		size={(size || "")}
-		style={{ ...(width && { width }), backgroundColor: (backgroundColor || "white"), borderWidth: "3px" }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+		backgroundColor={backgroundColor}
+	/>
 );
 
 export const HighlightBackgroundButton = ({
@@ -142,24 +129,20 @@ export const HighlightBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="third"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );
 
 export const HighlightBorderButton = ({
@@ -175,24 +158,21 @@ export const HighlightBorderButton = ({
 	backgroundColor = "white",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="outlined"
 		color="third"
-		size={(size || "")}
-		style={{ ...(width && { width }), backgroundColor: (backgroundColor || "white"), borderWidth: "3px" }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+		backgroundColor={backgroundColor}
+	/>
 );
 
 export const SuccessBackgroundButton = ({
@@ -207,24 +187,20 @@ export const SuccessBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="success"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );
 
 export const ErrorBackgroundButton = ({
@@ -239,24 +215,20 @@ export const ErrorBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="error"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );
 
 export const InfoBackgroundButton = ({
@@ -271,22 +243,18 @@ export const InfoBackgroundButton = ({
 	title = "Button",
 	onClick,
 }) => (
-	<Button
-		key={id}
+	<BaseButton
 		id={id}
 		type={type}
 		disabled={disabled}
 		className={className}
+		titleClassName={titleClassName}
+		titleColor={titleColor}
+		size={size}
+		width={width}
+		title={title}
+		onClick={onClick}
 		variant="contained"
 		color="info"
-		size={(size || "")}
-		style={{ ...(width && { width }) }}
-		onClick={onClick}
-	>
-		<Typography className={titleClassName} sx={{ color: `${titleColor}!important` }} style={{ textTransform: "none" }}>
-			<b>
-				{title}
-			</b>
-		</Typography>
-	</Button>
+	/>
 );

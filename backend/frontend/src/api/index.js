@@ -73,6 +73,10 @@ export const removeUser = (id) => api.post("user/delete", { id });
 export const getUsersData = () => api.get("user");
 export const submitUserRole = (userId, role) => api.post("user/role", { id: userId, role });
 export const getData = () => api.get("data");
+export const getSalesRecords = () => api.get("data/records");
+export const createSalesRecord = (record) => api.post("data/records", record);
+export const updateSalesRecord = (id, record) => api.patch(`data/records/${id}`, record);
+export const deleteSalesRecord = (id) => api.delete(`data/records/${id}`);
 export const getMyProfile = () => api.get("user/profile");
 export const updateMyProfile = (username, email) => api.patch("user/profile", { username, email });
 export const changeMyPassword = (currentPassword, newPassword, confirmPassword) =>

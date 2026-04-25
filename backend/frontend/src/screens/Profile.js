@@ -13,6 +13,7 @@ const Profile = () => {
 	const { success, error } = useSnackbar();
 	const [isLoading, setIsLoading] = useState(false);
 	const [profile, setProfile] = useState(null);
+	const [isEditingProfile, setIsEditingProfile] = useState(false);
 
 	const [profileValues, setProfileValues] = useState({ username: "", email: "" });
 	const [profileErrors, setProfileErrors] = useState({ username: "", email: "" });
@@ -125,6 +126,7 @@ const Profile = () => {
 				username: nextProfile?.username || "",
 				email: nextProfile?.email || "",
 			});
+			setIsEditingProfile(false);
 			success(message || "Profile updated successfully.");
 		} catch {
 			error("Failed to update profile.");
@@ -168,7 +170,7 @@ const Profile = () => {
 	return (
 		<>
 			<Spinner open={isLoading} />
-			<Grid container direction="column" spacing={2}>
+			<Grid id="profile-page" container direction="column" spacing={2}>
 				<Grid item>
 					<Typography variant="h4" color="white.main">
 						{"My Profile"}
@@ -182,15 +184,15 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={6}>
 								<Typography color="text.secondary">{"Role"}</Typography>
-								<Typography>{profile?.role || "-"}</Typography>
+								<Typography id="profile-role">{profile?.role || "-"}</Typography>
 							</Grid>
 							<Grid item xs={12} sm={6}>
 								<Typography color="text.secondary">{"Account created"}</Typography>
-								<Typography>{formatDate(profile?.createdAt)}</Typography>
+								<Typography id="profile-created-at">{formatDate(profile?.createdAt)}</Typography>
 							</Grid>
 							<Grid item xs={12} sm={6}>
 								<Typography color="text.secondary">{"Last active"}</Typography>
-								<Typography>{formatDate(profile?.lastActiveAt)}</Typography>
+								<Typography id="profile-last-active">{formatDate(profile?.lastActiveAt)}</Typography>
 							</Grid>
 						</Grid>
 					</Paper>
@@ -204,9 +206,11 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={6}>
 								<TextField
+									id="profile-username"
 									fullWidth
 									label="Username"
 									value={profileValues.username}
+									disabled={!isEditingProfile}
 									error={Boolean(profileErrors.username)}
 									helperText={profileErrors.username}
 									onChange={(event) => {
@@ -217,10 +221,12 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={6}>
 								<TextField
+									id="profile-email"
 									fullWidth
 									label="E-mail"
 									type="email"
 									value={profileValues.email}
+									disabled={!isEditingProfile}
 									error={Boolean(profileErrors.email)}
 									helperText={profileErrors.email}
 									onChange={(event) => {
@@ -230,7 +236,17 @@ const Profile = () => {
 								/>
 							</Grid>
 							<Grid item xs={12} display="flex" justifyContent="flex-end">
-								<SecondaryBackgroundButton title="Save profile" disabled={!canSaveProfile} onClick={saveProfile} />
+								<SecondaryBackgroundButton
+									id="profile-edit-button"
+									title="Edit profile"
+									onClick={() => setIsEditingProfile(true)}
+								/>
+								<SecondaryBackgroundButton
+									id="profile-save-button"
+									title="Save profile"
+									disabled={!isEditingProfile || !canSaveProfile}
+									onClick={saveProfile}
+								/>
 							</Grid>
 						</Grid>
 					</Paper>
@@ -247,6 +263,7 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={4}>
 								<TextField
+									id="profile-password-current"
 									fullWidth
 									label="Current password"
 									type="password"
@@ -261,6 +278,7 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={4}>
 								<TextField
+									id="profile-password-new"
 									fullWidth
 									label="New password"
 									type="password"
@@ -275,6 +293,7 @@ const Profile = () => {
 							</Grid>
 							<Grid item xs={12} sm={4}>
 								<TextField
+									id="profile-password-confirm"
 									fullWidth
 									label="Confirm password"
 									type="password"
@@ -288,7 +307,7 @@ const Profile = () => {
 								/>
 							</Grid>
 							<Grid item xs={12} display="flex" justifyContent="flex-end">
-								<SecondaryBackgroundButton title="Change password" onClick={savePassword} />
+								<SecondaryBackgroundButton id="profile-password-save" title="Change password" onClick={savePassword} />
 							</Grid>
 						</Grid>
 					</Paper>

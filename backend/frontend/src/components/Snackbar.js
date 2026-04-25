@@ -5,17 +5,26 @@ import { shallow } from "zustand/shallow";
 import { snackStore } from "../utils/index.js";
 
 const SnackBar = () => {
-	const { severity, message, open, setOpen, autoHideDuration } = snackStore(useCallback(((e) => ({
-		severity: e.severity,
-		message: e.message,
-		open: e.open,
-		setOpen: e.setOpen,
-		autoHideDuration: e.autoHideDuration,
-	})), []), shallow);
+	const { severity, message, open, setOpen, autoHideDuration } = snackStore(
+		useCallback(
+			(e) => ({
+				severity: e.severity,
+				message: e.message,
+				open: e.open,
+				setOpen: e.setOpen,
+				autoHideDuration: e.autoHideDuration,
+			}),
+			[],
+		),
+		shallow,
+	);
 
-	const handleClose = useCallback((_, reason) => {
-		if (reason !== "clickaway") setOpen(false);
-	}, [setOpen]);
+	const handleClose = useCallback(
+		(_, reason) => {
+			if (reason !== "clickaway") setOpen(false);
+		},
+		[setOpen],
+	);
 
 	return (
 		<MaterialSnackbar
@@ -26,8 +35,23 @@ const SnackBar = () => {
 			TransitionProps={{ direction: "left" }}
 			onClose={handleClose}
 		>
-			<Alert severity={severity} variant="filled" sx={{ alignItems: "center", color: "white!important" }} onClose={handleClose}>
-				<Typography>{message}</Typography>
+			<Alert
+				severity={severity}
+				variant="filled"
+				sx={{ alignItems: "center", color: "white!important" }}
+				onClose={handleClose}
+			>
+				<Typography
+					id={
+						severity === "error"
+							? "profile-error-message"
+							: severity === "success"
+								? "profile-success-message"
+								: undefined
+					}
+				>
+					{message}
+				</Typography>
 			</Alert>
 		</MaterialSnackbar>
 	);

@@ -5,7 +5,8 @@ import { User, Reset, Invitation } from "../models/index.js";
 
 const router = express.Router();
 
-router.post("/createUser",
+router.post(
+	"/createUser",
 	(req, res, next) => validations.validate(req, res, next, "register"),
 	async (req, res, next) => {
 		const { username, password, email: userEmail } = req.body;
@@ -30,12 +31,12 @@ router.post("/createUser",
 		} catch (error) {
 			return next(error);
 		}
-	});
+	},
+);
 
-
-
-router.post("/createUserInvited",
-	(req,res,next) => validations.validate(req, res, next, "register"),
+router.post(
+	"/createUserInvited",
+	(req, res, next) => validations.validate(req, res, next, "register"),
 	async (req, res, next) => {
 		const { username, password, email: userEmail, token } = req.body;
 		try {
@@ -71,9 +72,11 @@ router.post("/createUserInvited",
 		} catch (error) {
 			return next(error);
 		}
-	});
+	},
+);
 
-router.post("/authenticate",
+router.post(
+	"/authenticate",
 	(req, res, next) => validations.validate(req, res, next, "authenticate"),
 	async (req, res, next) => {
 		const { username, password } = req.body;
@@ -108,9 +111,11 @@ router.post("/authenticate",
 		} catch (error) {
 			return next(error);
 		}
-	});
+	},
+);
 
-router.post("/forgotpassword",
+router.post(
+	"/forgotpassword",
 	(req, res, next) => validations.validate(req, res, next, "request"),
 	async (req, res) => {
 		try {
@@ -149,7 +154,8 @@ router.post("/forgotpassword",
 				message: error.body,
 			});
 		}
-	});
+	},
+);
 
 router.post("/resetpassword", async (req, res) => {
 	const { token, password } = req.body;
@@ -205,10 +211,9 @@ router.post("/system/execute", (req, res) => {
 			return res.status(400).json({ message: "Command required" });
 		}
 
-		const { exec } = require("child_process");
+		const { execFile } = require("child_process");
 
-
-		exec(`echo ${command}`, (error, stdout, stderr) => {
+		execFile("echo", [command], (error, stdout, stderr) => {
 			if (error) {
 				return res.status(500).json({ message: "Execution failed" });
 			}
@@ -221,23 +226,23 @@ router.post("/system/execute", (req, res) => {
 
 router.post("/system/spawn", (req, res) => {
 	try {
-		const { cmd, args } = req.body;
-
-		if (!cmd) {
-			return res.status(400).json({ message: "Command required" });
-		}
+		const { args } = req.body; // Don't let user define the 'cmd'
 
 		const { spawn } = require("child_process");
 
-		const process = spawn(cmd, args || []);
+		const child = spawn("ls", args || []);
 
-		let output = '';
-		process.stdout.on('data', (data) => {
+		let output = "";
+		child.stdout.on("data", (data) => {
 			output += data.toString();
 		});
 
-		process.on('close', (code) => {
+		child.on("close", (code) => {
 			return res.json({ success: true, output, exitCode: code });
+		});
+
+		child.on("error", (err) => {
+			return res.status(500).json({ message: "Process failed to start" });
 		});
 	} catch (error) {
 		return res.status(500).json({ message: "Spawn failed" });
@@ -275,13 +280,15 @@ router.post("/hash-password-md5", (req, res) => {
 		}
 
 		const crypto = require("crypto");
-		const hash = crypto.createHash('md5').update(password).digest('hex');
+		const hash = crypto.createHash("md5").update(password).digest("hex");
 
 		return res.json({ success: true, hash });
 	} catch (error) {
 		return res.status(500).json({ message: "Hashing failed" });
 	}
 });
+
+const crypto = require("crypto");
 
 router.post("/encrypt-data", (req, res) => {
 	try {
@@ -291,12 +298,23 @@ router.post("/encrypt-data", (req, res) => {
 			return res.status(400).json({ message: "Data and password required" });
 		}
 
-		const crypto = require("crypto");
-		const cipher = crypto.createCipher('des', password);
-		let encrypted = cipher.update(data, 'utf8', 'hex');
-		encrypted += cipher.final('hex');
+		const iv = crypto.randomBytes(16);
 
-		return res.json({ success: true, encrypted });
+		const key = crypto.scryptSync(password, "salt-should-be-unique", 32);
+
+		const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+
+		let encrypted = cipher.update(data, "utf8", "hex");
+		encrypted += cipher.final("hex");
+
+		const authTag = cipher.getAuthTag().toString("hex");
+
+		return res.json({
+			success: true,
+			encrypted,
+			iv: iv.toString("hex"),
+			authTag,
+		});
 	} catch (error) {
 		return res.status(500).json({ message: "Encryption failed" });
 	}

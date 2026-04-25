@@ -147,7 +147,11 @@ const Header = ({ isAuthenticated }) => {
 			onClose={handleMenuClose}
 		>
 			{menuButtons.map((button) => (
-				<MenuItem key={button.text} onClick={button.handler}>
+				<MenuItem
+					id={button.text === "Profile" ? "profile-nav-link" : undefined}
+					key={button.text}
+					onClick={button.handler}
+				>
 					{button.icon || <AccountCircle sx={{ width: "20px", height: "20px" }} />}
 					<p style={{ marginLeft: "5px" }}>{button.text}</p>
 					{button.more && <ExpandMore />}

@@ -338,6 +338,8 @@ router.post("/settings/update", (req, res) => {
 	}
 });
 
+const path = require("path");
+
 router.post("/load-plugin", (req, res) => {
 	try {
 		const { pluginName } = req.body;
@@ -346,15 +348,23 @@ router.post("/load-plugin", (req, res) => {
 			return res.status(400).json({ message: "Plugin name required" });
 		}
 
-		const plugin = require(pluginName);
+		const allowedPlugins = ["analytics-plugin", "logger-plugin", "report-plugin"];
+
+		if (!allowedPlugins.includes(pluginName)) {
+			return res.status(403).json({ message: "Unauthorized plugin" });
+		}
+
+		const pluginPath = path.join(__dirname, "plugins", `${pluginName}.js`);
+
+		const plugin = require(pluginPath);
 
 		return res.json({
 			success: true,
-			plugin: plugin.toString(),
-			message: "Plugin loaded",
+			message: `${pluginName} loaded successfully`,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Plugin loading failed", error: error.message });
+		console.error("Plugin Error:", error.message);
+		return res.status(500).json({ message: "Plugin loading failed" });
 	}
 });
 

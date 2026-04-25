@@ -19,31 +19,56 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ButtonWithText = ({ text, icon, more, handler }) => (
+const ButtonWithText = ({ id, text, icon, more, handler }) => (
 	<span key={text}>
-		{!more
-		&& (
-			<Button key={text} sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-start", padding: "8px 40px 8px 16px" }} onClick={(event) => handler(event)}>
-				{icon && (<Image src={icon} alt={text} fit="contain" width="25px" />)}
-				<Typography align="center" color="white.main" fontSize="medium" ml={1} display="flex" alignItems="center" sx={{ textTransform: "capitalize" }}>
+		{!more && (
+			<Button
+				id={id}
+				key={text}
+				sx={{
+					width: "100%",
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "flex-start",
+					padding: "8px 40px 8px 16px",
+				}}
+				onClick={(event) => handler(event)}
+			>
+				{icon && <Image src={icon} alt={text} fit="contain" width="25px" />}
+				<Typography
+					align="center"
+					color="white.main"
+					fontSize="medium"
+					ml={1}
+					display="flex"
+					alignItems="center"
+					sx={{ textTransform: "capitalize" }}
+				>
 					{text}
 					{more && <ExpandMore />}
 				</Typography>
 			</Button>
 		)}
-		{more
-		&& (
+		{more && (
 			<Accordion
 				key={text}
-				title={(
+				title={
 					<Grid item sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-start" }}>
 						<Image src={icon} alt={text} fit="contain" width="25px" />
-						<Typography align="center" color="white.main" fontSize="medium" ml={1} display="flex" alignItems="center" sx={{ textTransform: "capitalize" }}>
+						<Typography
+							align="center"
+							color="white.main"
+							fontSize="medium"
+							ml={1}
+							display="flex"
+							alignItems="center"
+							sx={{ textTransform: "capitalize" }}
+						>
 							{text}
 						</Typography>
 					</Grid>
-				)}
-				content={(
+				}
+				content={
 					<Grid container flexDirection="column" width="100%">
 						{more.map((el) => (
 							<Button key={el.title} color="white" onClick={el.handler}>
@@ -51,7 +76,7 @@ const ButtonWithText = ({ text, icon, more, handler }) => (
 							</Button>
 						))}
 					</Grid>
-				)}
+				}
 				alwaysExpanded={false}
 				titleBackground="transparent"
 				expandIconColor="white"
@@ -60,8 +85,13 @@ const ButtonWithText = ({ text, icon, more, handler }) => (
 	</span>
 );
 
-const ButtonSimple = ({ text, icon, handler, ind }) => (
-	<Button key={text} sx={{ minWidth: "30px!important", padding: "0px", marginTop: (ind === 0) ? "0px" : "10px" }} onClick={(event) => handler(event)}>
+const ButtonSimple = ({ id, text, icon, handler, ind }) => (
+	<Button
+		id={id}
+		key={text}
+		sx={{ minWidth: "30px!important", padding: "0px", marginTop: ind === 0 ? "0px" : "10px" }}
+		onClick={(event) => handler(event)}
+	>
 		<Image src={icon} alt={text} fit="contain" width="30px" />
 	</Button>
 );
@@ -76,12 +106,16 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 	useEffect(() => setIsSmall(sidebarIsSmall), [sidebarIsSmall]);
 
 	const buttons = [
-		...(isAdmin ? [{
-			text: "Users",
-			handler: () => {
-				navigate("/users");
-			},
-		}] : []),
+		...(isAdmin
+			? [
+					{
+						text: "Users",
+						handler: () => {
+							navigate("/users");
+						},
+					},
+				]
+			: []),
 		{
 			text: "Overview",
 			handler: () => {
@@ -100,29 +134,43 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 				navigate("/dashboard2");
 			},
 		},
+		{
+			id: "sidebar-sales-data-link",
+			text: "Sales Data",
+			handler: () => {
+				navigate("/data/manage");
+			},
+		},
 	];
 
 	return (
-		<div className={classes.sidebar} style={{ width: (isSmall) ? "50px" : "200px", padding: (isSmall) ? "20px 5px" : "20px 5px", textAlign: "center" }}>
-			{!isSmall && buttons.map((button) => (
-				<ButtonWithText
-					key={button.text}
-					icon={button.icon}
-					text={button.text}
-					handler={button.handler}
-					more={button.more}
-				/>
-			))}
-			{isSmall && buttons.map((button, ind) => (
-				<ButtonSimple
-					key={button.text}
-					icon={button.icon}
-					text={button.text}
-					handler={button.handler}
-					more={button.more}
-					ind={ind}
-				/>
-			))}
+		<div
+			className={classes.sidebar}
+			style={{ width: isSmall ? "50px" : "200px", padding: isSmall ? "20px 5px" : "20px 5px", textAlign: "center" }}
+		>
+			{!isSmall &&
+				buttons.map((button) => (
+					<ButtonWithText
+						key={button.text}
+						id={button.id}
+						icon={button.icon}
+						text={button.text}
+						handler={button.handler}
+						more={button.more}
+					/>
+				))}
+			{isSmall &&
+				buttons.map((button, ind) => (
+					<ButtonSimple
+						key={button.text}
+						id={button.id}
+						icon={button.icon}
+						text={button.text}
+						handler={button.handler}
+						more={button.more}
+						ind={ind}
+					/>
+				))}
 		</div>
 	);
 };
